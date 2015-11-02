@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var redis = require('redis'),
-	client = redis.createClient();
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   possibleLetters = req.query['possibleLetters'];
@@ -27,9 +24,20 @@ router.get('/', function(req, res, next) {
 
   console.log(redisQuery);
 
-  client.keys(redisQuery, function(err, replies){
-    res.send(replies);
-  });
+  var fs = require('fs'); 
+  var text = fs.readFileSync('words.txt','utf8'); 
+  var words = text.split('\r\n'); 
+
+  var regexString = redisQuery; 
+  regexString = "^" + regexString + "$" 
+
+  var patt = new RegExp(regexString); 
+
+  var filtered = words.filter(function(item){ 
+    return patt.test(item); 
+  }); 
+
+  res.send(filtered);
 });
 
 module.exports = router;
