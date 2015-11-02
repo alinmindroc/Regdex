@@ -10,7 +10,7 @@
 
 	<script type="text/ng-template" id="/todos.html">
 		<form>
-			<label>Letters:
+			<label>Number of letters:
 				<input type="number" ng-model="wordLength"
 				min="2" max="{{maxWordLength}}" ng-change="knownLetters=[]"/>
 			</label>
@@ -22,8 +22,10 @@
 			</label>
 		</form>
 
-		<form>		
-			<input type="text" maxlength="1" size="1" ng-repeat="i in range(wordLength) track by $index" ng-model="knownLetters[$index]"/>
+		<form>
+			<label>Known letters:
+				<input type="text" maxlength="1" size="1" ng-repeat="i in range(wordLength) track by $index" ng-model="knownLetters[$index]"/>
+			</label>
 		</form>
 
 		</br>
