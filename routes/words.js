@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  possibleLetters = req.query['possibleLetters'];
+  possibleLetters = req.query['possibleLetters'].toLowerCase();
 
   lettersRegex = '[' + possibleLetters + ']';
 
@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 
   for(var key in req.query){
     if(key != 'length' && key != 'possibleLetters'){
-      redisQuery[parseInt(key.substring(1))] = req.query[key];
+      redisQuery[parseInt(key.substring(1))] = req.query[key].toLowerCase();
     }
   }
 
