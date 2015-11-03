@@ -1,84 +1,18 @@
 <html ng-app="app">
 <head>
 	<title>Pixwords destroyer</title>
-</head>
-<body>
-	<ng-view></ng-view>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
 
-	<script type="text/ng-template" id="/todos.html">
-		<form>
-			<label>Number of letters:
-				<input type="number" ng-model="wordLength"
-				min="2" max="{{maxWordLength}}" ng-change="knownLetters=[]"/>
-			</label>
-		</form>
+	<script src="/javascripts/WordsController.js"></script>
 
-		<form>
-			<label>Possible letters:
-				<input type="text" ng-model="possibleLetters" min="5" max="27"/>
-			</label>
-		</form>
-
-		<form>
-			<label>Known letters:
-				<input type="text" maxlength="1" size="1" ng-repeat="i in range(wordLength) track by $index" ng-model="knownLetters[$index]"/>
-			</label>
-		</form>
-
-		</br>
-
-		<button ng-click="go()">Go</button>
-
-		</br>
-		</br>
-		<ol>
-			<li ng-repeat = "i in result">{{i}}</li>
-		</ol>
-	</script>
-
-	<script>
-		angular.module('app', ['ngRoute', 'ngResource'])
-		.controller('TodoController', ['$scope', '$resource', function($scope, $resource){
-			$scope.wordLength = 5;
-			$scope.maxWordLength = 16;
-			$scope.knownLetters = new Array($scope.maxWordLength);
-			$scope.possibleLetters = "";
-
-			$scope.range = function(len){
-				return new Array(len);
-			}
-
-			$scope.go = function(){
-				params = {};
-
-				for(var i in $scope.knownLetters){
-					if($scope.knownLetters[i].length > 0)
-						params['l' + i] = $scope.knownLetters[i];
-				}
-
-				params['length'] = $scope.wordLength;
-				params['possibleLetters'] = $scope.possibleLetters;
-
-				var resource = $resource('/words', {});
-				var wordsResult = resource.query(params, function(){
-					$scope.result = wordsResult;
-				});
-			}
-
-
-		}])
-		.config(['$routeProvider', function ($routeProvider) {
-			$routeProvider
-			.when('/', {
-				templateUrl: '/todos.html',
-				controller: 'TodoController'
-			});
-		}]);
-	</script>
-
-
+</style>
+</head>
+<body>
+	<ng-view></ng-view>
 </body>
 </html>

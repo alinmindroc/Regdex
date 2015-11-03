@@ -1,0 +1,30 @@
+<div>
+	<label>Number of letters:
+		<input class="form-control" type="number" ng-model="wordLength"
+		min="2" max="{{maxWordLength}}" ng-change="knownLetters=[]"/>
+	</label>
+</div>
+
+</br>
+<div>
+	Possible letters:
+</br>
+<input type="text" class="input" placeholder="example: aieobrthufg" aria-describedby="basic-addon1" ng-model="possibleLetters" min="5" max="27">
+</div>
+
+</br>
+<div>
+	Known letters:
+</br>
+<input type="text" class="input one-letter-wide" maxlength="1" size="1" ng-repeat="i in range(wordLength) track by $index" ng-model="knownLetters[$index]" aria-describedby="basic-addon1" ng-model="possibleLetters" min="5" max="27">
+</div>
+
+</br>
+
+<button class="btn btn-success" ng-click="go()">Search</button>
+
+</br>
+</br>
+<ol>
+	<li ng-repeat = "i in result">{{i}}</li>
+</ol>
