@@ -5,6 +5,10 @@ angular.module('app', ['ngRoute', 'ngResource'])
 	$scope.knownLetters = new Array($scope.maxWordLength);
 	$scope.possibleLetters = "";
 
+	$scope.range = function(len){
+		return new Array(len);
+	}
+
 	$scope.makeRequest = function(){
 		params = {};
 
