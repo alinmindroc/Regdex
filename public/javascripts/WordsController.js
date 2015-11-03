@@ -5,11 +5,7 @@ angular.module('app', ['ngRoute', 'ngResource'])
 	$scope.knownLetters = new Array($scope.maxWordLength);
 	$scope.possibleLetters = "";
 
-	$scope.range = function(len){
-		return new Array(len);
-	}
-
-	$scope.go = function(){
+	$scope.makeRequest = function(){
 		params = {};
 
 		for(var i in $scope.knownLetters){
@@ -25,8 +21,6 @@ angular.module('app', ['ngRoute', 'ngResource'])
 			$scope.result = wordsResult;
 		});
 	}
-
-
 }])
 .config(['$routeProvider', function ($routeProvider) {
 	$routeProvider

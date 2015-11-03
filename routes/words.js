@@ -1,9 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
+
+String.prototype.replaceAt=function(index, character) {
+  return this.substr(0, index) + character + this.substr(index+character.length);
+}
+
+function replaceDiacritics(string){
+  var convMap = {
+    'ă' : 'a',
+    'â' : 'a',
+    'î' : 'i',
+    'ş' : 's',
+    'ș' : 's',
+    'ț' : 't', 
+    'ţ' : 't' 
+  };
+  for (var i = 0; i < string.length; i++) {
+    if(string[i] in convMap) {    
+      string = string.replaceAt(i, convMap[string[i]]);      
+    }
+  } 
+  return string;
+}
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  possibleLetters = req.query['possibleLetters'].toLowerCase();
+  possibleLetters = replaceDiacritics(req.query['possibleLetters'].toLowerCase());
 
   lettersRegex = '[' + possibleLetters + ']';
 
@@ -16,7 +39,7 @@ router.get('/', function(req, res, next) {
 
   for(var key in req.query){
     if(key != 'length' && key != 'possibleLetters'){
-      redisQuery[parseInt(key.substring(1))] = req.query[key].toLowerCase();
+      redisQuery[parseInt(key.substring(1))] = replaceDiacritics(req.query[key].toLowerCase());
     }
   }
 
