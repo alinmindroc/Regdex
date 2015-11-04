@@ -7,6 +7,13 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var words = require('./routes/words');
+var fs = require('fs'); 
+
+
+
+//read the words file
+wordsArray = fs.readFileSync('words.txt','utf8').split('\r\n'); 
+
 
 var app = express();
 
@@ -21,7 +28,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
-
 
 app.use('/', routes);
 app.use('/words', words);

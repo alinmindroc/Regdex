@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-
-String.prototype.replaceAt=function(index, character) {
-  return this.substr(0, index) + character + this.substr(index+character.length);
+function replaceAt(str, index, character){
+  return str.substr(0, index) + character + str.substr(index + character.length);
 }
 
 function replaceDiacritics(string){
+
   var convMap = {
     'ă' : 'a',
     'â' : 'a',
@@ -18,49 +18,82 @@ function replaceDiacritics(string){
   };
   for (var i = 0; i < string.length; i++) {
     if(string[i] in convMap) {    
-      string = string.replaceAt(i, convMap[string[i]]);      
+      string = replaceAt(string, i, convMap[string[i]]);      
     }
   } 
   return string;
 }
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  possibleLetters = replaceDiacritics(req.query['possibleLetters'].toLowerCase());
+function count(string, char){
+  return (string.match(new RegExp(char, "g")) || []).length;
+}
 
-  lettersRegex = '[' + possibleLetters + ']';
+function getRegex(queryObject){
+  possibleLetters = replaceDiacritics(queryObject['possibleLetters'].toLowerCase());
+  wordLength = parseInt(queryObject['length']);
 
-  wordLength = parseInt(req.query['length']);
-  redisQuery = new Array(wordLength);
+  finalRegex = new Array(wordLength);
 
-  for(var i=0; i<redisQuery.length; i++){
-    redisQuery[i] = lettersRegex;
+  //each letter can take values from the possibleLetters array
+  for(var i=0; i<finalRegex.length; i++){
+    finalRegex[i] = '[' + possibleLetters + ']';
   }
 
-  for(var key in req.query){
+  //set the known letters in the regex
+  for(var key in queryObject){
     if(key != 'length' && key != 'possibleLetters'){
-      redisQuery[parseInt(key.substring(1))] = replaceDiacritics(req.query[key].toLowerCase());
+      finalRegex[parseInt(key.substring(1))] = replaceDiacritics(queryObject[key].toLowerCase());
     }
   }
 
-  redisQuery = redisQuery.join('');
+  //create string from character array
+  finalRegex = finalRegex.join('');
 
-  console.log(redisQuery);
+  //set beginning and final characters
+  finalRegex = "^" + finalRegex + "$";
 
-  var fs = require('fs'); 
-  var text = fs.readFileSync('words.txt','utf8'); 
-  var words = text.split('\r\n'); 
+  return new RegExp(finalRegex);
+}
 
-  var regexString = redisQuery; 
-  regexString = "^" + regexString + "$" 
+/* GET users listing. */
+router.get('/', function(req, res, next) {
 
-  var patt = new RegExp(regexString); 
+  var pattern = getRegex(req.query); 
 
-  var filtered = words.filter(function(item){ 
-    return patt.test(item); 
-  }); 
+  var filteredWords = wordsArray.filter(function(item){ 
+    return pattern.test(item); 
+  });
 
-  res.send(filtered);
+  //check that the filtered words don't contain
+  //a letter with an occurence number higher than specified
+  letterCount = {};
+
+  for(var i in possibleLetters){
+    crtLetter = possibleLetters[i];
+    if(crtLetter in letterCount){
+      letterCount[crtLetter]++;
+    } else {
+      letterCount[crtLetter] = 1;
+    }
+  }
+
+  finalWords = [];
+
+  for(var i in filteredWords){
+    word = filteredWords[i];
+    check = true;
+    for(var l in letterCount){
+      nr = letterCount[l];
+      if(count(word, l) > nr){
+        check = false;
+        break;
+      }
+    }
+    if(check)
+      finalWords.push(word);
+  }
+
+  res.send(finalWords);
 });
 
 module.exports = router;

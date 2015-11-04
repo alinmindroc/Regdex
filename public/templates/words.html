@@ -9,7 +9,7 @@
 <div>
 	Possible letters:
 </br>
-<input type="text" class="input" placeholder="example: aieobrthufg" aria-describedby="basic-addon1" ng-model="possibleLetters" min="5" max="27">
+<input type="text" class="input" placeholder="include duplicates!" aria-describedby="basic-addon1" ng-model="possibleLetters" min="5" max="27">
 </div>
 
 </br>
@@ -26,5 +26,5 @@
 </br>
 </br>
 <ol>
-	<li ng-repeat = "i in result">{{i}}</li>
+	<li ng-repeat = "word in result">{{word}}</li>
 </ol>
