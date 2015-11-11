@@ -25,6 +25,11 @@
 
 </br>
 </br>
-<ol>
-	<li ng-repeat = "word in result">{{word}}</li>
-</ol>
+<div ng-show="finishedRequest">
+	<ol>
+		<li ng-repeat = "word in result">{{word}}</li>
+	</ol>
+</div>
+<div ng-show="finishedRequest && result.length == 0">
+	No words found
+</div>

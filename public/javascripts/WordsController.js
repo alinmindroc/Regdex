@@ -10,6 +10,7 @@ angular.module('app', ['ngRoute', 'ngResource'])
 	}
 
 	$scope.makeRequest = function(){
+		$scope.finishedRequest = true;
 		params = {};
 
 		for(var i in $scope.knownLetters){
@@ -23,6 +24,7 @@ angular.module('app', ['ngRoute', 'ngResource'])
 		var resource = $resource('/words', {});
 		var wordsResult = resource.query(params, function(){
 			$scope.result = wordsResult;
+			$scope.finishedRequest = true;
 		});
 	}
 }])
